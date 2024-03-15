@@ -7,7 +7,7 @@ test.use({
 });
 
 test.beforeEach(async ({ page }) => {
-    // Nada precisa ser feito aqui.
+    
 });
 
 test.afterEach(async ({ page }) => {
@@ -45,5 +45,4 @@ test('Fazer um registro com sucesso', async ({ page }) => {
         await page.click('button#register-button');
 
     });
-
 });
