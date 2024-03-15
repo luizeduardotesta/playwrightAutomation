@@ -1,0 +1,10 @@
+Feature: Criação de Registro
+  Como um usuário
+  Eu quero ser capaz de criar um registro com sucesso
+  Para poder acessar os recursos do site
+
+  Scenario: Criação de Registro Bem-Sucedida
+    Given que estou na página de registro
+    When eu preencher o formulário de registro com informações válidas
+    And eu clicar no botão de registro
+    Then o registro é criado com sucesso
