@@ -25,7 +25,7 @@ test('Fazer um registro com sucesso', async ({ page }) => {
         expect(currentUrl).toBe('https://demo.nopcommerce.com/');
     });
 
-    await test.step('Navegar para a página de registro', async () => {
+    await test.step('Navegar para a página de registro e se registrar', async () => {
         const email: string = faker.internet.email();
 
         await page.click('a[class="ico-register"]');
@@ -42,7 +42,44 @@ test('Fazer um registro com sucesso', async ({ page }) => {
         await page.check('input#Newsletter');
         await page.fill('input#Password', 'Test@12345');
         await page.fill('input#ConfirmPassword', 'Test@12345');
-        await page.click('button#register-button');
+    });
 
+    await test.step('Validar se a data selecionada corresponde com o input desejado', async () => {
+
+        const selectedDay = await page.evaluate(() => {
+            const element = document.evaluate('//select[@name="DateOfBirthDay"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            return element instanceof HTMLSelectElement ? element.value : null;
+        });
+    
+        const selectedMonth = await page.evaluate(() => {
+            const element = document.evaluate('//select[@name="DateOfBirthMonth"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            return element instanceof HTMLSelectElement ? element.value : null;
+        });
+    
+        const selectedYear = await page.evaluate(() => {
+            const element = document.evaluate('//select[@name="DateOfBirthYear"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            return element instanceof HTMLSelectElement ? element.value : null;
+        });
+    
+        const expectedDay = '1';
+        const expectedMonth = '9';
+        const expectedYear = '1990';
+    
+        expect(selectedDay).toBe(expectedDay);
+        expect(selectedMonth).toBe(expectedMonth);
+        expect(selectedYear).toBe(expectedYear);
+    });
+
+    await test.step('Clicar no botão de registro', async () => {
+        await page.click('button#register-button');
+    });
+
+    await test.step('Verificar o resultado do registro', async () => {
+
+        await page.waitForURL('https://demo.nopcommerce.com/registerresult/1?returnUrl=/');
+        await page.waitForSelector('div.result:visible');
+            
+        const registerSuccessMessage = await page.textContent('div.result');
+        expect(registerSuccessMessage).toContain('Your registration completed');
     });
 });
